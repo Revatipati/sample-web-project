@@ -5,6 +5,8 @@ pipeline {
         REPO_NAME  = 'https://github.com/Revatipati/sample-web-project.git'
         BRANCH_NAME = 'master'
         SONAR_TOKEN = credentials('rp-day3- sonar-token')
+        SONAR_SERVER_NAME = 'RPSonarQube'
+        SONAR_PROJECT_KEY = 'RPProjDay3'
       //  SONAR_HOME = 'C:\\Users\\Administrator\\Documents\\tools\\sonar-scanner\\bin'
 
     }
@@ -31,13 +33,19 @@ pipeline {
         stage('SAST') {
             steps {
                 echo 'sast with sonar scanner'
-                bat """
-                 sonar-scanner \
-                -Dsonar.projectKey=RPProjDay3 \
-                -Dsonar.sources=. \
-                -Dsonar.host.url=http://13.203.151.240:9000 \
-                -Dsonar.token=${SONAR_TOKEN}
-                """
+                script {
+                    withSonarQubeEnv("${SONAR_SERVER_NAME}"){
+                        bat """
+                        sonar-scanner \
+                        -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
+                        -Dsonar.sources=. \
+                        -Dsonar.host.url=${SONAR_HOST_URL}  \
+                        -Dsonar.token=${SONAR_TOKEN}
+                        """
+                    }
+                    
+                }
+                
             }
         }
      
