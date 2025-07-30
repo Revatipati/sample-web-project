@@ -48,6 +48,18 @@ pipeline {
                 
             }
         }
+
+        stage('build docker image') {
+            steps {
+                echo 'strat docker image'
+                script {
+                    def imageName = 'rpwebapp-iis-ltsc2022'
+                    def imageTag = 'codev1'
+                    docker.build("${imageName}:${imageTag}",".")
+                }
+                bat 'docker images | findstr rpwebapp'
+            }
+        }
      
     }
 }
