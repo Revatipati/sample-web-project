@@ -1,23 +1,20 @@
 pipeline {
     agent any // selection of agents 
     // defining environment variables 
-    environment {
-        SONAR_HOME = 'C:\\Users\\Administrator\\Documents\\tools\\sonar-scanner\\bin'
-    }
+    //environment {
+      //  SONAR_HOME = 'C:\\Users\\Administrator\\Documents\\tools\\sonar-scanner\\bin'
+    //}
 
     stages {
         // stage1
         stage('testing and verify of required  commands') {
-            steps {
-                echo 'Hello World'
-                 // bat or pwsh
-                bat """
-                %SONAR_HOME%\\sonar-scanner --version
-                echo == checking docker ===>
-                docker version 
-                echo ==> java version ==>
-                java --version 
-                """
+            steps {                
+                echo 'checking sonar version'
+                bat 'sonar-scanner --version'
+                echo 'checking java version'
+                bat 'docker version'
+                echo 'chekcing java version'
+                bat 'java -version'
             }
         }
      
