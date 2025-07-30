@@ -1,9 +1,12 @@
 pipeline {
     agent any // selection of agents 
     // defining environment variables 
-    //environment {
+    environment {
+        REPO_NAME  = 'https://github.com/Revatipati/sample-web-project.git'
+        BRANCH_NAME = 'master'
       //  SONAR_HOME = 'C:\\Users\\Administrator\\Documents\\tools\\sonar-scanner\\bin'
-    //}
+
+    }
 
     stages {
         // stage1
@@ -15,6 +18,13 @@ pipeline {
                 bat 'docker version'
                 echo 'chekcing java version'
                 bat 'java -version'
+            }
+        }
+
+        stage {
+            steps {
+                echo 'clone repo to project'
+                git url: "${REPO_NAME}", branch: "${BRANCH_NAME}"
             }
         }
      
