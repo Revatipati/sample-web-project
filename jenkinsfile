@@ -7,7 +7,6 @@ pipeline {
       //  SONAR_HOME = 'C:\\Users\\Administrator\\Documents\\tools\\sonar-scanner\\bin'
 
     }
-
     stages {
         // stage1
         stage('testing and verify of required  commands') {
@@ -21,7 +20,7 @@ pipeline {
             }
         }
 
-        stage {
+        stage('clone') {
             steps {
                 echo 'clone repo to project'
                 git url: "${REPO_NAME}", branch: "${BRANCH_NAME}"
