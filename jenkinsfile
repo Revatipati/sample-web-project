@@ -7,6 +7,7 @@ pipeline {
         SONAR_TOKEN = credentials('rp-day3- sonar-token')
         SONAR_SERVER_NAME = 'RPSonarQube'
         SONAR_PROJECT_KEY = 'RPProjDay3'
+        DOCKER_CREDS = 'rpdockerID'
       //  SONAR_HOME = 'C:\\Users\\Administrator\\Documents\\tools\\sonar-scanner\\bin'
 
     }
@@ -53,11 +54,26 @@ pipeline {
             steps {
                 echo 'strat docker image'
                 script {
-                    def imageName = 'rpwebapp-iis-ltsc2022'
+                    def imageName = 'docker.io/revatipatic1/rpwebapp-iis-ltsc2022'
                     def imageTag = 'codev1'
                     docker.build("${imageName}:${imageTag}",".")
                 }
                 bat 'docker images | findstr rpwebapp'
+            }
+        }
+
+        stage('Docker image push') {
+            steps {
+                echo 'push the docker hub image'
+                script {
+                    def imageName  = "revatipatic1/rpwebapp-iis-ltsc2022"
+                    def imageTag   = "codev1"
+                    def hubCred   = "${DOCKER_CREDS}"
+                    // calling jenkins plugin docker pipeline to push
+                    docker.withRegistry('https://registry.hub.docker.com',hubCred){
+                        docker.image(imageName + ":" + imageTag).push()
+
+                }
             }
         }
      
