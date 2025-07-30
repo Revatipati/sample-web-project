@@ -4,6 +4,7 @@ pipeline {
     environment {
         REPO_NAME  = 'https://github.com/Revatipati/sample-web-project.git'
         BRANCH_NAME = 'master'
+        SONAR_TOKEN = credentials('rp-day3- sonar-token')
       //  SONAR_HOME = 'C:\\Users\\Administrator\\Documents\\tools\\sonar-scanner\\bin'
 
     }
@@ -35,7 +36,7 @@ pipeline {
                 -Dsonar.projectKey=RPProjDay3 \
                 -Dsonar.sources=. \
                 -Dsonar.host.url=http://13.203.151.240:9000 \
-                -Dsonar.token=sqp_f6dd799a426467dcc874e763539770682bf0171a
+                -Dsonar.token=${SONAR_TOKEN}
                 """
             }
         }
