@@ -8,6 +8,8 @@ pipeline {
         SONAR_SERVER_NAME = 'RPSonarQube'
         SONAR_PROJECT_KEY = 'RPProjDay3'
         DOCKER_CREDS = 'rpdockerID'
+        IAMGE_NAME = 'docker.io/revatipatic1/rpwebapp-iis-ltsc2022'
+        IMAGE_TAG = 'codev1'
       //  SONAR_HOME = 'C:\\Users\\Administrator\\Documents\\tools\\sonar-scanner\\bin'
 
     }
@@ -22,14 +24,14 @@ pipeline {
                 echo 'chekcing java version'
                 bat 'java -version'
             }
-        }
+        }//end of testing and verify of required  commands
 
         stage('clone') {
             steps {
                 echo 'clone repo to project'
                 git url: "${REPO_NAME}", branch: "${BRANCH_NAME}"
             }
-        }
+        }//end of clone
 
         stage('SAST') {
             steps {
@@ -48,7 +50,7 @@ pipeline {
                 }
                 
             }
-        }
+        }//end of SAST
 
         stage('build docker image') {
             steps {
@@ -60,14 +62,14 @@ pipeline {
                 }
                 bat 'docker images | findstr rpwebapp'
             }
-        }
+        }//end of build docker image
 
         stage('SAST using Trivy') {
             steps {
                 echo 'scan the conatier image by using Trivy'
                 bat 'trivy image --severity HIGH,CRITICAL --exit-code 1 registry.hub.docker.com/revatipatic1/rpwebapp-iis-ltsc2022:codev1'
             }
-        }
+        }//end of SAST using Trivy
 
         stage('Docker image push') {
             steps {
@@ -84,7 +86,19 @@ pipeline {
             }
         }
      
-    }
+    }//end of Docker image push
+    stage('deploy app using container image') {
+        steps {
+                echo 'deploying app using container'
+                bat """
+                echo trying to remove container with same name 
+                docker rm rpappc1 -f  >null 2>&1 || echo Container found found 
+                docker  run -itd --name rpappc1 -p 1122:80  ${IAMGE_NAME}:${IMAGE_TAG}
+                docker  ps | findstr rpappc1 
+                """
+            }
+
+    }//end deploy app using container image
     
     }
 }
