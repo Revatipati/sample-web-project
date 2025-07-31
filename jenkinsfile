@@ -65,11 +65,11 @@ pipeline {
         stage('SAST using Trivy') {
             steps {
                 echo 'scan the conatier image by using Trivy'
-                bat 'trivy image registry.hub.docker.com/revatipatic1/rpwebapp-iis-ltsc2022:codev1'
+                bat 'trivy image --severity HIGH,CRITICAL --exit-code 1 registry.hub.docker.com/revatipatic1/rpwebapp-iis-ltsc2022:codev1'
             }
         }
 
-     /*    stage('Docker image push') {
+        stage('Docker image push') {
             steps {
                 echo 'push the docker hub image'
                 script {
@@ -84,7 +84,7 @@ pipeline {
             }
         }
      
-    } */
+    }
     
     }
 }
