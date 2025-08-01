@@ -15,7 +15,7 @@ pipeline {
     }
     stages {
         // stage1
-        stage('testing and verify of required  commands') {
+        stage('Testing and verify of required  commands') {
             steps {                
                 echo 'checking sonar version'
                 bat 'sonar-scanner --version'
@@ -26,7 +26,7 @@ pipeline {
             }
         }//end of testing and verify of required  commands
 
-        stage('clone') {
+        stage('Clone') {
             steps {
                 echo 'clone repo to project'
                 git url: "${REPO_NAME}", branch: "${BRANCH_NAME}"
@@ -87,6 +87,7 @@ pipeline {
         }
      
     }//end of Docker image push
+
     stage('deploy app using container image') {
         steps {
                 echo 'deploying app using container'
@@ -99,6 +100,19 @@ pipeline {
             }
 
     }//end deploy app using container image
+
+    stage('using zap to do DAST') {
+        // only given label agent can run this stage job 
+        agent {
+            label 'revati-linux'  
+        }
+        steps {
+            git url: "${REPO_NAME}", branch: "${BRANCH_NAME}"
+            echo 'usinz zap'
+            sh 'docker run -t --rm  ghcr.io/zaproxy/zaproxy:stable zap-baseline.py -t http://172.31.44.127:1122 -I'
+        }
+
+    }//end of using zap to do DAST
     
     }
 }
